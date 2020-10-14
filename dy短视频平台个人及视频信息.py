@@ -9,6 +9,8 @@ import json
 from pool import *
 
 
+# 个人主页信息
+
 def switch_uid(url):
 	headers = {
 		'user-agent': get_ua(),
@@ -137,12 +139,12 @@ def manage_dy(url, page=1):
 if __name__ == '__main__':
 	'''
 	page  页数，一页20条视频信息
-	text  主页分享的用户信息  例：'在抖音，记录美好生活！ https://v.douyin.com/JS3gbyE/'
+	text  主页分享的用户信息  例：'在，记录美好生活！ https://v.douyin.com/JS3gbyE/'
 	'''
 	page = 1  # 页数
-	text = '在抖音，记录美好生活！ https://v.douyin.com/JS3gbyE/'  # 四川观察
+	text = '在，记录美好生活！ https://v.douyin.com/JS3gbyE/'  # 四川观察
 	dy_id = re.findall(r'https://v.douyin.com/(\w+)', text)[0]  # 正则获取JS3gbyE
 	url = 'https://v.douyin.com/' + dy_id
 	# print(url)
 	# print(manage_dy(url))
-	manage_dy(url, page)
+	print(manage_dy(url, page))
