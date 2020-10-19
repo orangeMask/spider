@@ -7,6 +7,8 @@ import requests
 import re
 import json
 from pool import *
+from datetime import datetime
+import time
 
 
 # 个人主页信息
@@ -23,7 +25,6 @@ def switch_uid(url):
 
 
 def get_author(uid, put_cursor=''):
-	auth_dic = {}
 	video_list = []
 	url = f'https://www.amemv.com/web/api/v2/aweme/post/?user_id={uid}'
 	params = {
@@ -42,26 +43,41 @@ def get_author(uid, put_cursor=''):
 	max_cursor = response['max_cursor']
 	# print(extra_cursor, has_more, max_cursor)
 	aweme_list = response['aweme_list']
-	nickname = aweme_list[0]['author']['nickname']
-	unique_id = aweme_list[0]['author']['unique_id']  # 自定义id
-	signature = aweme_list[0]['author']['signature']  # 签名
-	custom_verify = aweme_list[0]['author']['custom_verify']  # 头衔标签
-	follower_count = aweme_list[0]['author']['follower_count']  # 他的粉丝数
-	favoriting_count = aweme_list[0]['author']['favoriting_count']  # 他的关注数
-	total_favorited = aweme_list[0]['author']['total_favorited']  # 总赞
-	aweme_count = aweme_list[0]['author']['aweme_count']  # 视频数
-
-	auth_dic['nickname'] = nickname
-	auth_dic['unique_id'] = unique_id
-	auth_dic['signature'] = signature
-	auth_dic['desc'] = custom_verify.replace('\n', ' ')
-	auth_dic['follow_count'] = follower_count
-	auth_dic['fans_count'] = favoriting_count
-	auth_dic['total_star'] = total_favorited
-	auth_dic['video_count'] = aweme_count
+	author = aweme_list[0]['author']
+	nickname = author['nickname']
+	avatar_larger = author['avatar_larger']['url_list']
+	avatar_thumb = author['avatar_thumb']['url_list']
+	avatar_medium = author['avatar_medium']['url_list']
+	unique_id = author['unique_id']  # 抖音号自定义id
+	signature = author['signature']  # 签名
+	custom_verify = author['custom_verify']  # 头衔标签
+	enterprise_verify_reason = author['enterprise_verify_reason']  # 认证
+	follower_count = author['follower_count']  # 他的粉丝数
+	favoriting_count = author['favoriting_count']  # 他的关注数
+	total_favorited = author['total_favorited']  # 总赞
+	aweme_count = author['aweme_count']  # 视频数
+	cursor_now = datetime.fromtimestamp(extra_cursor / 1000)  # datetime格式时间
+	cursor_time = cursor_now.strftime('%Y-%m-%d %H:%M:%S')
+	# time.strftime('%Y-%m-%d %H:%M:%S', extra_cursor)
+	auth_dic = {
+		'cursor_now': cursor_time,
+		'nickname': nickname,
+		'unique_id': unique_id,
+		'signature': signature,
+		'desc': custom_verify.replace('\n', ' '),
+		'verify': enterprise_verify_reason.replace('\n', ' '),
+		'follower_count': follower_count,
+		'fans_count': favoriting_count,
+		'total_star': int(total_favorited),
+		'video_count': aweme_count,
+		'avatar_list': {
+			'larger': avatar_larger[0],
+			'medium': avatar_medium[0],
+			'thumb': avatar_thumb[0]
+		}  # 大中小头像
+	}
 
 	for aweme in aweme_list:
-		video_dic = {}
 		statistics = aweme['statistics']
 		desc = aweme['desc']
 		text_extra = aweme['text_extra']
@@ -69,8 +85,10 @@ def get_author(uid, put_cursor=''):
 			name = text_extra[0]['hashtag_name']
 		else:
 			name = ''
-		video_dic['video_name'] = name
-		video_dic['desc'] = desc
+		video_dic = {
+			'video_name': name,
+			'desc': desc,
+		}
 		video_dic.update(statistics)
 		video_list.append(video_dic)
 	return auth_dic, video_list, max_cursor, has_more
@@ -131,7 +149,7 @@ def manage_dy(url, page=1):
 				break
 	else:
 		pass
-	data_dic['auth'] = [auth_dic]
+	data_dic['auth'] = auth_dic
 	data_dic['video'] = video_list
 	return json.dumps(data_dic)
 
