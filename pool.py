@@ -6,8 +6,8 @@ user_agents = [
 	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)',
 	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)',
 	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Avant Browser)',
+	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; The World)',
 	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SE 2.X MetaSr 1.0; SE 2.X MetaSr 1.0; .NET CLR 2.0.50727; SE 2.X MetaSr 1.0)',
-	'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; The World)'
 ]
 
 
