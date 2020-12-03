@@ -150,13 +150,13 @@ def get_aweme_info(uid, put_cursor=''):
 
 
 def manage_dy(url, page=1):
-	'''
+	"""
 	:param url: 分享页链接
 	:return:
 			switch_uid: 请求获取数字uid
 			get_author: 获取用户信息及视频信息  # 每个视频信息下有发布用户信息,采用第一个视频的用户信息
 			get_aweme_info: 获取视频信息
-	'''
+	"""
 	data_dic = {}
 	uid = switch_uid(url)
 	auth_dic, video_list, max_cursor, has_more = get_author(uid)
