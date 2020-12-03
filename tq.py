@@ -86,32 +86,34 @@ def parse2(response):
 
 
 def manage(search):
-	# city = "杭州"
 	city_url = f"http://toy1.weather.com.cn/search?cityname={search}"
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
 	}
 	response = requests.get(url=city_url, headers=headers).content.decode('utf8')
-	result = re.findall('"([a-zA-Z0-9]+)~[a-z]+~(.*?)~.*?~(.*?)"', response)
+	# result = re.findall('"([a-zA-Z0-9]+)~[a-z]+~(.*?)~.*?~(.*?)"', response)
+	result = re.findall('"([0-9]{9})~[a-z]+~(.*?)~.*?~([\\u4E00-\\u9FA5]+)"', response)
 	cities_wea = []
 	for item in result:
 		code = item[0]
 		name = f"{item[2]} {item[1]}"
 		# print(code, name)
-		if "街道" in name:
-			res = html_get(code, f=2)
-			one_city = parse2(res)
-		else:
+		try:
 			res = html_get(code)
 			one_city = parse(res)
+		except:
+			"""没有温度"""
+			res = html_get(code, f=2)
+			one_city = parse2(res)
 		item_dic = {
 			"name": name,
 			"weather": one_city
 		}
 		cities_wea.append(item_dic)
-	# print(json.dumps(cities_wea, ensure_ascii=False))
+	print(json.dumps(cities_wea, ensure_ascii=False))
 	return json.dumps(cities_wea)
 
 
-search = "北京"
-# print(manage(search))
+if __name__ == '__main__':
+	search = "cs"
+	manage(search)
